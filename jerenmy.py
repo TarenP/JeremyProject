@@ -3,15 +3,17 @@ import pygame
 
 #create the screen
 pygame.init()
-screen = pygame.display.set_mode((1300,1300))
+screen = pygame.display.set_mode((1000,1000))
 screen.fill((250,250,250))
 
 #the stuff to be displayed
 
-can = pygame.image.load("C:/Users/Shuyi/Downloads/trash.png")
+can = pygame.image.load("Images/trash.png")
 can = pygame.transform.scale(can, (300,300))
-person = pygame.image.load("C:/Users/Shuyi/Downloads/person.png")
+person = pygame.image.load("Images/person.png")
 person = pygame.transform.scale(person, (300,400))
+paper = pygame.image.load("Images/paper.png")
+paper = pygame.transform.scale(paper, (100,100))
 pygame.mixer.init()
 
 #create variable to store the papers position
