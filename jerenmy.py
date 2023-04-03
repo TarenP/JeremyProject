@@ -8,8 +8,6 @@ screen.fill((250,250,250))
 
 #the stuff to be displayed
 
-paper = pygame.image.load("C:/Users/Shuyi/Downloads/paper.png")
-paper = pygame.transform.scale(paper, (100,100))
 can = pygame.image.load("C:/Users/Shuyi/Downloads/trash.png")
 can = pygame.transform.scale(can, (300,300))
 person = pygame.image.load("C:/Users/Shuyi/Downloads/person.png")
