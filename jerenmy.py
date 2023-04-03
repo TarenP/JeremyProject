@@ -1,40 +1,50 @@
-# importing required library
+
 import pygame
- 
-# activate the pygame library .
+
+#create the screen
 pygame.init()
-X = 600
-Y = 600
- 
-# create the display surface object
-# of specific dimension..e(X, Y).
-screen = pygame.display.set_mode((X, Y))
- 
-# set the pygame window name
-pygame.display.set_caption('image')
- 
-# create a surface object, image is drawn on it.
-imp = pygame.image.load("C:\\Users\\taren\\Documents\\GitHub\\JeremyProject\\Images\\paper.png").convert()
+screen = pygame.display.set_mode((1300,1300))
+screen.fill((250,250,250))
 
-screen.fill((255, 255, 255))
+#the stuff to be displayed
 
-# Using blit to copy content from one surface to other
-screen.blit(imp, (0, 0))
- 
-# paint screen one time
-pygame.display.flip()
-status = True
-while (status):
- 
-  # iterate over the list of Event objects
-  # that was returned by pygame.event.get() method.
-    for i in pygame.event.get():
- 
-        # if event object type is QUIT
-        # then quitting the pygame
-        # and program both.
-        if i.type == pygame.QUIT:
-            status = False
- 
-# deactivates the pygame library
+paper = pygame.image.load("C:/Users/Shuyi/Downloads/paper.png")
+paper = pygame.transform.scale(paper, (100,100))
+can = pygame.image.load("C:/Users/Shuyi/Downloads/trash.png")
+can = pygame.transform.scale(can, (300,300))
+person = pygame.image.load("C:/Users/Shuyi/Downloads/person.png")
+person = pygame.transform.scale(person, (300,400))
+pygame.mixer.init()
+
+#create variable to store the papers position
+paper_x = 500
+paper_y = 500
+init_vx = 20
+init_vy = 10
+time_increment = 1
+time = 1
+acceleration = 1
+#there's a few ways we could do this, generate all the x and y values first and iteratre thru list or calc real time
+#y_coord = []
+#x_coord = []
+
+it = True
+while it:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            it=False
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                time += time_increment
+                paper_x = init_vx*time
+                paper_y = init_vy*time + .5*acceleration*time**2
+
+    screen.fill((250, 250, 250))
+    screen.blit(can, (800,500))
+    screen.blit(person, (0, 300))
+    if paper_x and paper_y:
+        screen.blit(paper,(paper_x, paper_y))
+    pygame.display.flip()
+
 pygame.quit()
