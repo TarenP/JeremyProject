@@ -1,5 +1,6 @@
 
 import pygame
+from time import sleep
 
 #create the screen
 pygame.init()
@@ -10,7 +11,7 @@ screen.fill((250,250,250))
 
 can = pygame.image.load("Images/trash.png")
 can = pygame.transform.scale(can, (300,300))
-person = pygame.image.load("Images/person.png")
+person = pygame.image.load("Images/Idle.png")
 person = pygame.transform.scale(person, (300,400))
 paper = pygame.image.load("Images/paper.png")
 paper = pygame.transform.scale(paper, (100,100))
@@ -29,16 +30,41 @@ acceleration = 1
 #x_coord = []
 
 it = True
+inThrow = False
+num = 0
 while it:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             it=False
-
+        if inThrow:
+            num += 1
+            if num == 1:
+                person = pygame.image.load("Images/BackThrow.png")
+                person = pygame.transform.scale(person, (300,400))
+            elif num == 2:
+                sleep(.2)
+                person = pygame.image.load("Images/FinishThrow.png")
+                person = pygame.transform.scale(person, (350,450))
+                inThrow = False
+                num = 0
+            # print(num)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 time += time_increment
                 paper_x = init_vx*time
                 paper_y = init_vy*time + .5*acceleration*time**2
+
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                inThrow = True
+            elif event.key == pygame.K_a:
+                #Adjust angle up
+            elif event.key == pygame.K_d:
+                #Adjust angle up
+            elif event.key == pygame.K_w:
+                #Adjust initial velocity up
+            elif event.key == pygame.K_s:
+                #Adjust initial velocity down
 
     screen.fill((250, 250, 250))
     screen.blit(can, (800,500))
