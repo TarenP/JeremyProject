@@ -22,13 +22,6 @@ paper = pygame.transform.scale(paper, (50,50))
 # arrow = pygame.transform.scale(arrow, (100,100))
 pygame.mixer.init()
 
-def rot_center(image, angle, x, y):
-    
-    rotated_image = pygame.transform.rotate(image, angle)
-    new_rect = rotated_image.get_rect(center = image.get_rect(center = (x, y)).center)
-
-    return rotated_image, new_rect
-
 #create variable to store the papers position
 paper_x = 10
 paper_y = Y_Size * .35
@@ -38,10 +31,16 @@ time_increment = 1
 time = 1
 acceleration = 1
 angle = 0
-aInit_X = 70
-aInit_Y = 370
-aFin_X = 150
-aFin_Y = 370
+p1X = 70
+p1Y = 370
+p2X = 150
+p2Y = 370
+touched = False
+p1fX = 70
+p1fY = 370
+p2fX = 150
+p2fY = 370
+
 
 inThrow = False
 inMotion = False
@@ -54,19 +53,30 @@ while True:
             if event.key == pygame.K_SPACE:
                 inThrow = True
             elif event.key == pygame.K_a:
-                angle =- 10
-                ogInit_X = 70
-                ogInit_Y = 370
-                ogFin_X = 150
-                ogFin_Y = 370
-                aInit_X = ogInit_X*math.cos(math.radians(angle)) - ogInit_Y*math.sin(math.radians(angle))
-                aInit_Y = ogInit_Y*math.cos(math.radians(angle)) + ogInit_X*math.sin(math.radians(angle))
-                aFin_X = ogFin_X*math.cos(math.radians(angle)) - ogFin_Y*math.sin(math.radians(angle))
-                aFin_Y = ogFin_Y*math.cos(math.radians(angle)) + ogFin_X*math.sin(math.radians(angle))
-                
+                moved = True
+                angle -= 10
+                #point 1
+                d1 = math.sqrt((p1X-paper_x)**2 + (p1Y-paper_y)**2)
+                p1fX = d1*math.cos(math.radians(angle))
+                p1fY = d1*math.sin(math.radians(angle))
+                #point 2
+                d2 = math.sqrt((p2X-paper_x)**2 + (p2Y-paper_y)**2)
+                p2fX = d2*math.cos(math.radians(angle))
+                p2fY = d2*math.sin(math.radians(angle))
 
-            # elif event.key == pygame.K_d:
-
+            elif event.key == pygame.K_d:
+                moved = True
+                angle += 10
+                #point 1
+                d1 = math.sqrt((p1X-paper_x)**2 + (p1Y-paper_y)**2)
+                print(math.radians(angle))
+                p1fX = d1*math.cos(math.radians(angle))
+                p1fY = d1*math.sin(math.radians(angle))
+                #point 2
+                d2 = math.sqrt((p2X-paper_x)**2 + (p2Y-paper_y)**2)
+                print(math.radians(angle))
+                p2fX = d2*math.cos(math.radians(angle))
+                p2fY = d2*math.sin(math.radians(angle))
             # elif event.key == pygame.K_w:
             #     #Adjust initial velocity up
             # elif event.key == pygame.K_s:
@@ -102,6 +112,9 @@ while True:
     screen.blit(person, (10, 300))
     screen.blit(can, (800,500))
     screen.blit(paper,(paper_x, paper_y))
-    pygame.draw.line(screen,(255, 0, 0), (aInit_X, aInit_Y), (aFin_X, aFin_Y), 10)
+    if touched and not inMotion:
+        pygame.draw.line(screen,(255, 0, 0), (p1fX + 1000, p1fY + 100), (p2fX + paper_x + 20, p2fY + paper_y + 20), 10)
+    elif not inMotion:
+        pygame.draw.line(screen,(255, 0, 0), (p1fX, p1fY), (p2fX, p2fY), 10)
     pygame.display.update()
     pygame.display.flip()

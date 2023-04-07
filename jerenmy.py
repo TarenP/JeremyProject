@@ -19,34 +19,45 @@ person = pygame.image.load("Images/BackThrow.png")
 person = pygame.transform.scale(person, (300,400))
 paper = pygame.image.load("Images/paper.png")
 paper = pygame.transform.scale(paper, (50,50))
-arrow = pygame.image.load("Images/arrow.png")
-arrow = pygame.transform.scale(arrow, (100,100))
 pygame.mixer.init()
+
+#create variable to store the papers position
+init_v = -70
 
 #create variable to store the papers position
 paper_x = 10
 paper_y = Y_Size * .35
+<<<<<<< Updated upstream
 init_v = -20
 angle_deg = 2
 #init_vx = math.cos(angle)*init_v
 #init_vy = math.sin(angle)*init_v
 
+=======
+angle = 0
+init_vx = math.cos(angle)*init_v
+init_vy = math.sin(angle)*init_v
+>>>>>>> Stashed changes
 time_increment = 1
 time = 1
 acceleration = 1
-angle = 2
-#there's a few ways we could do this, generate all the x and y values first and iteratre thru list or calc real time
-#y_coord = []
-#x_coord = []
+p1X = 70
+p1Y = 370
+p2X = 150
+p2Y = 370
+touched = False
+p1fX = 70
+p1fY = 370
+p2fX = 150
+p2fY = 370
+
 
 inThrow = False
 inMotion = False
 num = 0
 
 
-
 while True:
-
     if paper_x > 1000:
 
         paper_x = 10
@@ -79,19 +90,39 @@ while True:
 
             if event.key == pygame.K_SPACE:
                 inThrow = True
-                # d[event.unicode] += 1
-                # if inThrow:
-                #     pass
-                # else:
-                #     inThrow = True
             elif event.key == pygame.K_a:
+<<<<<<< Updated upstream
                 angle_deg +=10
                 arrow = pygame.transform.rotate(arrow, angle)
                 angle_deg += 1 % 360  # Value will reapeat after 359. This prevents angle to overflow.
                 rect = arrow.get_rect()
                 rect.center = (10, Y_Size * .35)  # Put the new rect's center at old center.
+=======
+                touched = True
+                angle -= 10
+                #point 1
+                d1 = math.sqrt((p1X-paper_x)**2 + (p1Y-paper_y)**2)
+                p1fX = d1*math.cos(math.radians(angle))
+                p1fY = d1*math.sin(math.radians(angle))
+                #point 2
+                d2 = math.sqrt((p2X-paper_x)**2 + (p2Y-paper_y)**2)
+                p2fX = d2*math.cos(math.radians(angle))
+                p2fY = d2*math.sin(math.radians(angle))
+
+>>>>>>> Stashed changes
             elif event.key == pygame.K_d:
-                print('cheese')
+                touched = True
+                angle += 10
+                #point 1
+                d1 = math.sqrt((p1X-paper_x)**2 + (p1Y-paper_y)**2)
+                print(math.radians(angle))
+                p1fX = d1*math.cos(math.radians(angle))
+                p1fY = d1*math.sin(math.radians(angle))
+                #point 2
+                d2 = math.sqrt((p2X-paper_x)**2 + (p2Y-paper_y)**2)
+                print(math.radians(angle))
+                p2fX = d2*math.cos(math.radians(angle))
+                p2fY = d2*math.sin(math.radians(angle))
 
             elif event.key == pygame.K_w:
                 init_v -= 10
@@ -138,11 +169,14 @@ while True:
         # print("X: ", paper_x)
         # print("Y: ", paper_y)
 
-    print(paper_x, paper_y )
 
     screen.fill((250, 250, 250))
     screen.blit(person, (10, 300))
     screen.blit(can, (800,500))
+    if touched and not inMotion:
+        pygame.draw.line(screen,(255, 0, 0), (p1fX + paper_x + 20, p1fY + paper_y + 20), (p2fX + paper_x + 20, p2fY + paper_y + 20), 10)
+    elif not inMotion:
+        pygame.draw.line(screen,(255, 0, 0), (p1fX, p1fY), (p2fX, p2fY), 10)
     # screen.blit(arrow, rect)
     screen.blit(paper,(paper_x, paper_y))
     pygame.display.update()
