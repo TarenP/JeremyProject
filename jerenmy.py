@@ -27,17 +27,11 @@ init_v = -70
 #create variable to store the papers position
 paper_x = 10
 paper_y = Y_Size * .35
-<<<<<<< Updated upstream
 init_v = -20
-angle_deg = 2
+angle = 2
 #init_vx = math.cos(angle)*init_v
 #init_vy = math.sin(angle)*init_v
 
-=======
-angle = 0
-init_vx = math.cos(angle)*init_v
-init_vy = math.sin(angle)*init_v
->>>>>>> Stashed changes
 time_increment = 1
 time = 1
 acceleration = 1
@@ -91,13 +85,6 @@ while True:
             if event.key == pygame.K_SPACE:
                 inThrow = True
             elif event.key == pygame.K_a:
-<<<<<<< Updated upstream
-                angle_deg +=10
-                arrow = pygame.transform.rotate(arrow, angle)
-                angle_deg += 1 % 360  # Value will reapeat after 359. This prevents angle to overflow.
-                rect = arrow.get_rect()
-                rect.center = (10, Y_Size * .35)  # Put the new rect's center at old center.
-=======
                 touched = True
                 angle -= 10
                 #point 1
@@ -109,7 +96,6 @@ while True:
                 p2fX = d2*math.cos(math.radians(angle))
                 p2fY = d2*math.sin(math.radians(angle))
 
->>>>>>> Stashed changes
             elif event.key == pygame.K_d:
                 touched = True
                 angle += 10
@@ -159,10 +145,9 @@ while True:
     elif inMotion:
 
         time += time_increment
-        angle = angle_deg*math.pi/180
 
-        init_vx = math.cos(angle) * init_v
-        init_vy = math.sin(angle) * init_v
+        init_vx = math.cos(math.radians(angle)) * init_v
+        init_vy = math.sin(math.radians(angle)) * init_v
         paper_x = (init_vx*time)
         paper_y = int((0.5*(time * time)) + init_vy*time + Y_Size * .35)
         sleep(.015)
