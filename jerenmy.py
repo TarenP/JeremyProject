@@ -21,34 +21,8 @@ paper = pygame.image.load("Images/paper.png")
 paper = pygame.transform.scale(paper, (50,50))
 pygame.mixer.init()
 
-#create variable to store the papers position
-paper_x = 10
-paper_y = Y_Size * .35
-init_v = 20
-angle = 2
-#init_vx = math.cos(angle)*init_v
-#init_vy = math.sin(angle)*init_v
-
-time_increment = 1
-time = 1
-acceleration = 1
-p1X = 70
-p1Y = 370
-p2X = 150
-p2Y = 370
-touched = False
-p1fX = 70
-p1fY = 370
-p2fX = 150
-p2fY = 370
-
-
-d1 = math.sqrt((p1X-paper_x)**2 + (p1Y-paper_y)**2)
-d2 = math.sqrt((p2X-paper_x)**2 + (p2Y-paper_y)**2)
-
-inThrow = False
-inMotion = False
-num = 0
+can_x = 400
+can_y = 800
 
 def reset():
     global person
@@ -85,7 +59,7 @@ def reset():
     num = 0
 
     init_v = 20
-    angle = 2
+    angle = 0
     #init_vx = math.cos(angle)*init_v
     #init_vy = math.sin(angle)*init_v
 
@@ -96,7 +70,7 @@ def reset():
     p1Y = 370
     p2X = 150
     p2Y = 370
-    touched = False
+    touched = True
     p1fX = 70
     p1fY = 370
     p2fX = 150
@@ -105,6 +79,27 @@ def reset():
     d1 = math.sqrt((p1X-paper_x)**2 + (p1Y-paper_y)**2)
     d2 = math.sqrt((p2X-paper_x)**2 + (p2Y-paper_y)**2)
 
+    angle = 10
+    #point 1
+    p1fX = d1*math.cos(math.radians(angle))
+    p1fY = d1*math.sin(math.radians(angle))
+    #point 2
+    p2fX = d2*math.cos(math.radians(angle))
+    p2fY = d2*math.sin(math.radians(angle))
+
+def score():
+    global paper_x
+    global paper_y
+    global can_x
+    global can_y
+
+    can_x = 200
+    can_y = 200
+
+
+    
+
+reset()
 while True:
     if paper_x > 1000:
         reset()
@@ -185,10 +180,8 @@ while True:
 
     screen.fill((250, 250, 250))
     screen.blit(person, (10, 300))
-    screen.blit(can, (800,500))
-    if touched and not inMotion:
-        pygame.draw.line(screen,(255, 0, 0), (p1fX + paper_x + 20, p1fY + paper_y + 20), (p2fX + paper_x + 20, p2fY + paper_y + 20), 10)
-    elif not inMotion:
+    screen.blit(can, (can_x,can_y))
+    if not inMotion:
         pygame.draw.line(screen,(255, 0, 0), (p1fX, p1fY), (p2fX, p2fY), 10)
     # screen.blit(arrow, rect)
     screen.blit(paper,(paper_x, paper_y))
