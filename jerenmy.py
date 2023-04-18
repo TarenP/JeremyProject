@@ -22,12 +22,9 @@ paper = pygame.transform.scale(paper, (50,50))
 pygame.mixer.init()
 
 #create variable to store the papers position
-init_v = -70
-
-#create variable to store the papers position
 paper_x = 10
 paper_y = Y_Size * .35
-init_v = -20
+init_v = 20
 angle = 2
 #init_vx = math.cos(angle)*init_v
 #init_vy = math.sin(angle)*init_v
@@ -45,6 +42,9 @@ p1fY = 370
 p2fX = 150
 p2fY = 370
 
+
+d1 = math.sqrt((p1X-paper_x)**2 + (p1Y-paper_y)**2)
+d2 = math.sqrt((p2X-paper_x)**2 + (p2Y-paper_y)**2)
 
 inThrow = False
 inMotion = False
@@ -88,11 +88,9 @@ while True:
                 touched = True
                 angle -= 10
                 #point 1
-                d1 = math.sqrt((p1X-paper_x)**2 + (p1Y-paper_y)**2)
                 p1fX = d1*math.cos(math.radians(angle))
                 p1fY = d1*math.sin(math.radians(angle))
                 #point 2
-                d2 = math.sqrt((p2X-paper_x)**2 + (p2Y-paper_y)**2)
                 p2fX = d2*math.cos(math.radians(angle))
                 p2fY = d2*math.sin(math.radians(angle))
 
@@ -100,32 +98,53 @@ while True:
                 touched = True
                 angle += 10
                 #point 1
-                d1 = math.sqrt((p1X-paper_x)**2 + (p1Y-paper_y)**2)
-                print(math.radians(angle))
                 p1fX = d1*math.cos(math.radians(angle))
                 p1fY = d1*math.sin(math.radians(angle))
                 #point 2
-                d2 = math.sqrt((p2X-paper_x)**2 + (p2Y-paper_y)**2)
-                print(math.radians(angle))
                 p2fX = d2*math.cos(math.radians(angle))
                 p2fY = d2*math.sin(math.radians(angle))
 
             elif event.key == pygame.K_w:
-                init_v -= 10
+                init_v += 1
+                d2 += 5
+                p2fX = d2*math.cos(math.radians(angle))
+                p2fY = d2*math.sin(math.radians(angle))
             elif event.key == pygame.K_s:
-                init_v += 10
-
+                init_v -= 1
+                d2 -= 5
+                p2fX = d2*math.cos(math.radians(angle))
+                p2fY = d2*math.sin(math.radians(angle))
             elif event.key == pygame.K_r:
 
+                #create variable to store the papers position
                 paper_x = 10
                 paper_y = Y_Size * .35
+                init_v = 20
+                angle = 2
+                #init_vx = math.cos(angle)*init_v
+                #init_vy = math.sin(angle)*init_v
+
+                time_increment = 1
+                time = 1
+                acceleration = 1
+                p1X = 70
+                p1Y = 370
+                p2X = 150
+                p2Y = 370
+                touched = False
+                p1fX = 70
+                p1fY = 370
+                p2fX = 150g
+                p2fY = 370
+
+                d1 = math.sqrt((p1X-paper_x)**2 + (p1Y-paper_y)**2)
+                d2 = math.sqrt((p2X-paper_x)**2 + (p2Y-paper_y)**2)
 
                 # screen.blit(paper, (10 , Y_Size*.35))
                 person = pygame.image.load("Images/BackThrow.png")
                 person = pygame.transform.scale(person, (300, 400))
                 inThrow = False
                 inMotion = False
-                time = 1
                 num = 0
 
 
