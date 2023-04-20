@@ -2,6 +2,7 @@
 import pygame
 
 import math
+import random
 from time import sleep
 
 #create the screen
@@ -22,7 +23,7 @@ paper = pygame.transform.scale(paper, (50,50))
 pygame.mixer.init()
 
 can_x = 400
-can_y = 800
+can_y = 400
 
 def reset():
     global person
@@ -79,7 +80,7 @@ def reset():
     d1 = math.sqrt((p1X-paper_x)**2 + (p1Y-paper_y)**2)
     d2 = math.sqrt((p2X-paper_x)**2 + (p2Y-paper_y)**2)
 
-    angle = 10
+    angle = 0
     #point 1
     p1fX = d1*math.cos(math.radians(angle))
     p1fY = d1*math.sin(math.radians(angle))
@@ -93,21 +94,37 @@ def score():
     global can_x
     global can_y
 
-    can_x = 200
-    can_y = 200
+
+    if paper_x>can_x and paper_x<can_x+can.get_width():
+        if paper_y == can_y:
+            can_x = random.randrange(200, 800)
+            can_y = random.randrange(200, 800)
+    reset()
+    
 
 
     
 
 reset()
 while True:
+    
     if paper_x > 1000:
         reset()
         
 
     elif paper_y > 1000:
         reset()
-    
+
+    if paper_x>can_x - 30 and paper_x<can_x and paper_y >= (can_y) and paper_y <= (can_y + int(can.get_height() + 30)):
+        reset()
+        print("bad")
+        
+    if paper_x>can_x and paper_x<(can_x+int(can.get_width())) and paper_y >= can_y and paper_y <= (can_y + int(can.get_height())):
+        print("scored")
+        can_x = random.randrange(200, 800)
+        can_y = random.randrange(500, 800)
+        reset() 
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -116,24 +133,26 @@ while True:
             if event.key == pygame.K_SPACE:
                 inThrow = True
             elif event.key == pygame.K_a:
-                touched = True
-                angle -= 10
-                #point 1
-                p1fX = d1*math.cos(math.radians(angle))
-                p1fY = d1*math.sin(math.radians(angle))
-                #point 2
-                p2fX = d2*math.cos(math.radians(angle))
-                p2fY = d2*math.sin(math.radians(angle))
+                if -90 < angle and angle < 90:
+                    touched = True
+                    angle -= 10
+                    #point 1
+                    p1fX = d1*math.cos(math.radians(angle))
+                    p1fY = d1*math.sin(math.radians(angle))
+                    #point 2
+                    p2fX = d2*math.cos(math.radians(angle))
+                    p2fY = d2*math.sin(math.radians(angle))
 
             elif event.key == pygame.K_d:
-                touched = True
-                angle += 10
-                #point 1
-                p1fX = d1*math.cos(math.radians(angle))
-                p1fY = d1*math.sin(math.radians(angle))
-                #point 2
-                p2fX = d2*math.cos(math.radians(angle))
-                p2fY = d2*math.sin(math.radians(angle))
+                if -90 < angle and angle < 90:
+                    touched = True
+                    angle += 10
+                    #point 1
+                    p1fX = d1*math.cos(math.radians(angle))
+                    p1fY = d1*math.sin(math.radians(angle))
+                    #point 2
+                    p2fX = d2*math.cos(math.radians(angle))
+                    p2fY = d2*math.sin(math.radians(angle))
 
             elif event.key == pygame.K_w:
                 init_v += 1
@@ -176,12 +195,17 @@ while True:
         sleep(.015)
         # print("X: ", paper_x)
         # print("Y: ", paper_y)
+    
+    # score()
 
 
     screen.fill((250, 250, 250))
     screen.blit(person, (10, 300))
     screen.blit(can, (can_x,can_y))
-    if not inMotion:
+    pygame.draw.line(screen,(255, 0, 0), (can_x, can_y), (can_x + can.get_width(), can_y), 10)
+    if touched and not inMotion:
+        pygame.draw.line(screen,(255, 0, 0), (p1fX + paper_x + 20, p1fY + paper_y + 20), (p2fX + paper_x + 20, p2fY + paper_y + 20), 10)
+    elif not inMotion:
         pygame.draw.line(screen,(255, 0, 0), (p1fX, p1fY), (p2fX, p2fY), 10)
     # screen.blit(arrow, rect)
     screen.blit(paper,(paper_x, paper_y))
