@@ -18,6 +18,10 @@ can = pygame.image.load("Images/trash1.png")
 can = pygame.transform.scale(can, (200,200))
 person = pygame.image.load("Images/BackThrow.png")
 person = pygame.transform.scale(person, (300,400))
+happy = pygame.image.load("Images/Happy.png")
+happy = pygame.transform.scale(happy, (300,400))
+sad = pygame.image.load("Images/Sad.png")
+sad = pygame.transform.scale(sad, (300,400))
 paper = pygame.image.load("Images/paper.png")
 paper = pygame.transform.scale(paper, (50,50))
 pygame.mixer.init()
@@ -121,18 +125,20 @@ while True:
         
     if paper_x>can_x and paper_x<(can_x+int(can.get_width())) and paper_y >= can_y and paper_y <= (can_y + int(can.get_height())):
         print("scored")
+        score = True
         can_x = random.randrange(200, 800)
         can_y = random.randrange(500, 800)
         reset() 
+        #Allow for key presses
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
         elif event.type == pygame.KEYDOWN:
 
-            if event.key == pygame.K_SPACE:
+            if event.key == pygame.K_SPACE and not inMotion:
                 inThrow = True
-            elif event.key == pygame.K_a:
+            elif event.key == pygame.K_a and not inMotion:
                 if -90 < angle and angle < 90:
                     touched = True
                     angle -= 10
@@ -143,7 +149,7 @@ while True:
                     p2fX = d2*math.cos(math.radians(angle))
                     p2fY = d2*math.sin(math.radians(angle))
 
-            elif event.key == pygame.K_d:
+            elif event.key == pygame.K_d and not inMotion:
                 if -90 < angle and angle < 90:
                     touched = True
                     angle += 10
@@ -154,12 +160,12 @@ while True:
                     p2fX = d2*math.cos(math.radians(angle))
                     p2fY = d2*math.sin(math.radians(angle))
 
-            elif event.key == pygame.K_w:
+            elif event.key == pygame.K_w and not inMotion:
                 init_v += 1
                 d2 += 5
                 p2fX = d2*math.cos(math.radians(angle))
                 p2fY = d2*math.sin(math.radians(angle))
-            elif event.key == pygame.K_s:
+            elif event.key == pygame.K_s and not inMotion:
                 init_v -= 1
                 d2 -= 5
                 p2fX = d2*math.cos(math.radians(angle))
@@ -197,16 +203,28 @@ while True:
         # print("Y: ", paper_y)
     
     # score()
+    if not score:
+        person = pygame.image.load("Images/BackThrow.png")
+        person = pygame.transform.scale(person, (300,400))
+    if score:
+        person = pygame.transform.scale(happy, (300,400))
+        score = False
+    
+    
+
 
 
     screen.fill((250, 250, 250))
     screen.blit(person, (10, 300))
-    screen.blit(can, (can_x,can_y))
+    if score == False:
+        screen.blit(can, (can_x,can_y))
     pygame.draw.line(screen,(255, 0, 0), (can_x, can_y), (can_x + can.get_width(), can_y), 10)
-    if touched and not inMotion:
+    if touched and not inMotion and score == False:
         pygame.draw.line(screen,(255, 0, 0), (p1fX + paper_x + 20, p1fY + paper_y + 20), (p2fX + paper_x + 20, p2fY + paper_y + 20), 10)
-    elif not inMotion:
+    elif not inMotion and score == False:
         pygame.draw.line(screen,(255, 0, 0), (p1fX, p1fY), (p2fX, p2fY), 10)
     # screen.blit(arrow, rect)
-    screen.blit(paper,(paper_x, paper_y))
+    if score == False:
+        screen.blit(paper,(paper_x, paper_y))
+    
     pygame.display.update()
