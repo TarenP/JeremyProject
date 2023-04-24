@@ -3,10 +3,18 @@ import pygame
 
 import math
 import random
-from time import sleep
+import time
 
 #create the screen
 pygame.init()
+
+# initializing pygame
+pygame.font.init()
+ 
+# check whether font is initialized
+# or not
+pygame.font.get_init()
+
 X_Size = 1000
 Y_Size = 1000
 screen = pygame.display.set_mode((X_Size,Y_Size))
@@ -19,17 +27,30 @@ can = pygame.transform.scale(can, (200,200))
 person = pygame.image.load("Images/BackThrow.png")
 person = pygame.transform.scale(person, (300,400))
 happy = pygame.image.load("Images/Happy.png")
-happy = pygame.transform.scale(happy, (300,400))
+happy = pygame.transform.scale(happy, (500,600))
 sad = pygame.image.load("Images/Sad.png")
 sad = pygame.transform.scale(sad, (300,400))
 paper = pygame.image.load("Images/paper.png")
 paper = pygame.transform.scale(paper, (50,50))
 pygame.mixer.init()
 
+font1 = pygame.font.SysFont('chalkduster.ttf', 100)
+# Render the texts that you want to display
+text1 = font1.render('Scored!?!?', True, (255, 0, 0))
+textRect1 = text1.get_rect()
+# setting center for the first text
+textRect1.center = (500, 250)
+
+text2 = font1.render('Miss!', True, (255, 0, 0))
+textRect2 = text2.get_rect()
+# setting center for the first text
+textRect2.center = (500, 250)
+
 can_x = 400
 can_y = 400
 
 def reset():
+    global finish
     global person
     global inThrow
     global inMotion
@@ -52,30 +73,34 @@ def reset():
     global touched
     global d1
     global d2
+    global score
+    global miss
+
+    
+    miss = False
+    score = False
+    finish = False
+    inThrow = False
+    inMotion = False
+    touched = True
+
+
 
     paper_x = 10
     paper_y = Y_Size * .35
     person = pygame.image.load("Images/BackThrow.png")
     person = pygame.transform.scale(person, (300, 400))
-    inThrow = False
-        
-    inMotion = False
-    time = 1
     num = 0
-
     init_v = 20
     angle = 0
-    #init_vx = math.cos(angle)*init_v
-    #init_vy = math.sin(angle)*init_v
 
-    time_increment = 1
-    time = 1
+    time_increment = .25
+    Time = 1
     acceleration = 1
     p1X = 70
     p1Y = 370
     p2X = 150
     p2Y = 370
-    touched = True
     p1fX = 70
     p1fY = 370
     p2fX = 150
@@ -92,19 +117,6 @@ def reset():
     p2fX = d2*math.cos(math.radians(angle))
     p2fY = d2*math.sin(math.radians(angle))
 
-def score():
-    global paper_x
-    global paper_y
-    global can_x
-    global can_y
-
-
-    if paper_x>can_x and paper_x<can_x+can.get_width():
-        if paper_y == can_y:
-            can_x = random.randrange(200, 800)
-            can_y = random.randrange(200, 800)
-    reset()
-    
 
 
     
@@ -112,20 +124,28 @@ def score():
 reset()
 while True:
     
-    if paper_x > 1000:
-        reset()
+    if paper_x > 1000 and not score:
+        miss = True
+        startTime = time.time()
         
 
-    elif paper_y > 1000:
-        reset()
+    elif paper_y > 1000 and not score:
+        miss = True
+        startTime = time.time()
 
-    if paper_x>can_x - 30 and paper_x<can_x and paper_y >= (can_y) and paper_y <= (can_y + int(can.get_height() + 30)):
+    if paper_x>can_x - 30 and paper_x<can_x and paper_y >= (can_y) and paper_y <= (can_y + int(can.get_height() + 30)) and not score:
+        miss = True
+        # print("bad")
+    if miss ==True and time.time() >= startTime + 5:
         reset()
-        print("bad")
         
     if paper_x>can_x and paper_x<(can_x+int(can.get_width())) and paper_y >= can_y and paper_y <= (can_y + int(can.get_height())):
-        print("scored")
+        # print("scored")
         score = True
+        finish = False
+        startTime = time.time()
+        #wait 5 seconds from score
+    if score ==True and time.time() >= startTime + 5:
         can_x = random.randrange(200, 800)
         can_y = random.randrange(500, 800)
         reset() 
@@ -182,43 +202,51 @@ while True:
             if num == 1:
                 person = pygame.image.load("Images/BackThrow.png")
                 person = pygame.transform.scale(person, (300,400))
+                
             elif num == 2:
                 # sleep(.2)
-                person = pygame.image.load("Images/FinishThrow.png")
-                person = pygame.transform.scale(person, (350,450))
-                time = 1
+
+                finish = True
+                person1= pygame.image.load("Images/FinishThrow.png")
+                person1 = pygame.transform.scale(person1, (350,450))
+                Time = 1
                 inThrow = False
                 inMotion = True
 
     elif inMotion:
 
-        time += time_increment
+        Time += time_increment
 
         init_vx = math.cos(math.radians(angle)) * init_v
         init_vy = math.sin(math.radians(angle)) * init_v
-        paper_x = (init_vx*time)
-        paper_y = int((0.5*(time * time)) + init_vy*time + Y_Size * .35)
-        sleep(.015)
+        paper_x = (init_vx*Time)
+        paper_y = int((0.5*(Time * Time)) + init_vy*Time + Y_Size * .35)
+        # sleep(.015)
         # print("X: ", paper_x)
         # print("Y: ", paper_y)
     
-    # score()
-    if not score:
-        person = pygame.image.load("Images/BackThrow.png")
-        person = pygame.transform.scale(person, (300,400))
-    if score:
-        person = pygame.transform.scale(happy, (300,400))
-        score = False
     
     
 
 
 
     screen.fill((250, 250, 250))
-    screen.blit(person, (10, 300))
+    if finish:
+        screen.blit(person1, (10,300))    
+    elif score:
+        screen.blit(happy, (10,300))
+        screen.blit(text1, textRect1)
+    elif miss:
+        screen.blit(sad, (10,300))
+        screen.blit(text2, textRect2)
+    else:
+        screen.blit(person, (10, 300))
+    
+    
+        
     if score == False:
         screen.blit(can, (can_x,can_y))
-    pygame.draw.line(screen,(255, 0, 0), (can_x, can_y), (can_x + can.get_width(), can_y), 10)
+    # pygame.draw.line(screen,(255, 0, 0), (can_x, can_y), (can_x + can.get_width(), can_y), 10)
     if touched and not inMotion and score == False:
         pygame.draw.line(screen,(255, 0, 0), (p1fX + paper_x + 20, p1fY + paper_y + 20), (p2fX + paper_x + 20, p2fY + paper_y + 20), 10)
     elif not inMotion and score == False:
