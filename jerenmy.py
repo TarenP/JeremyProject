@@ -29,9 +29,11 @@ person = pygame.transform.scale(person, (300,400))
 happy = pygame.image.load("Images/Happy.png")
 happy = pygame.transform.scale(happy, (500,600))
 sad = pygame.image.load("Images/Sad.png")
-sad = pygame.transform.scale(sad, (300,400))
+sad = pygame.transform.scale(sad, (500,600))
 paper = pygame.image.load("Images/paper.png")
 paper = pygame.transform.scale(paper, (50,50))
+background = pygame.image.load("Images/background.jfif")
+background = pygame.transform.scale(background, (X_Size, Y_Size))
 pygame.mixer.init()
 
 font1 = pygame.font.SysFont('chalkduster.ttf', 100)
@@ -124,28 +126,31 @@ def reset():
 reset()
 while True:
     
-    if paper_x > 1000 and not score:
+    if paper_x > 1000 and not score and not miss:
         miss = True
+        finish = False
         startTime = time.time()
         
 
-    elif paper_y > 1000 and not score:
+    elif paper_y > 1000 and not score and not miss:
         miss = True
+        finish = False
         startTime = time.time()
 
-    if paper_x>can_x - 30 and paper_x<can_x and paper_y >= (can_y) and paper_y <= (can_y + int(can.get_height() + 30)) and not score:
+    if paper_x>can_x - 30 and paper_x<can_x and paper_y >= (can_y) and paper_y <= (can_y + int(can.get_height() + 30)) and not score and not miss:
         miss = True
-        # print("bad")
-    if miss ==True and time.time() >= startTime + 5:
+        finish = False
+        startTime = time.time()
+    
+    if miss ==True and time.time() >= startTime + 3 and not score:
         reset()
         
-    if paper_x>can_x and paper_x<(can_x+int(can.get_width())) and paper_y >= can_y and paper_y <= (can_y + int(can.get_height())):
-        # print("scored")
+    if paper_x>can_x and paper_x<(can_x+int(can.get_width())) and paper_y >= can_y and paper_y <= (can_y + int(can.get_height()))and not miss:
         score = True
         finish = False
         startTime = time.time()
         #wait 5 seconds from score
-    if score ==True and time.time() >= startTime + 5:
+    if score ==True and time.time() >= startTime + 3 and not miss:
         can_x = random.randrange(200, 800)
         can_y = random.randrange(500, 800)
         reset() 
@@ -159,26 +164,24 @@ while True:
             if event.key == pygame.K_SPACE and not inMotion:
                 inThrow = True
             elif event.key == pygame.K_a and not inMotion:
-                if -90 < angle and angle < 90:
-                    touched = True
-                    angle -= 10
-                    #point 1
-                    p1fX = d1*math.cos(math.radians(angle))
-                    p1fY = d1*math.sin(math.radians(angle))
-                    #point 2
-                    p2fX = d2*math.cos(math.radians(angle))
-                    p2fY = d2*math.sin(math.radians(angle))
+                touched = True
+                angle -= 10
+                #point 1
+                p1fX = d1*math.cos(math.radians(angle))
+                p1fY = d1*math.sin(math.radians(angle))
+                #point 2
+                p2fX = d2*math.cos(math.radians(angle))
+                p2fY = d2*math.sin(math.radians(angle))
 
             elif event.key == pygame.K_d and not inMotion:
-                if -90 < angle and angle < 90:
-                    touched = True
-                    angle += 10
-                    #point 1
-                    p1fX = d1*math.cos(math.radians(angle))
-                    p1fY = d1*math.sin(math.radians(angle))
-                    #point 2
-                    p2fX = d2*math.cos(math.radians(angle))
-                    p2fY = d2*math.sin(math.radians(angle))
+                touched = True
+                angle += 10
+                #point 1
+                p1fX = d1*math.cos(math.radians(angle))
+                p1fY = d1*math.sin(math.radians(angle))
+                #point 2
+                p2fX = d2*math.cos(math.radians(angle))
+                p2fY = d2*math.sin(math.radians(angle))
 
             elif event.key == pygame.K_w and not inMotion:
                 init_v += 1
@@ -228,9 +231,8 @@ while True:
     
     
 
+    screen.blit(background, (0, 0))
 
-
-    screen.fill((250, 250, 250))
     if finish:
         screen.blit(person1, (10,300))    
     elif score:
@@ -243,16 +245,16 @@ while True:
         screen.blit(person, (10, 300))
     
     
-        
-    if score == False:
+    
+    if score == False and miss == False:
         screen.blit(can, (can_x,can_y))
     # pygame.draw.line(screen,(255, 0, 0), (can_x, can_y), (can_x + can.get_width(), can_y), 10)
-    if touched and not inMotion and score == False:
+    if touched and not inMotion and score == False and miss == False:
         pygame.draw.line(screen,(255, 0, 0), (p1fX + paper_x + 20, p1fY + paper_y + 20), (p2fX + paper_x + 20, p2fY + paper_y + 20), 10)
-    elif not inMotion and score == False:
+    elif not inMotion and score == False and miss == False:
         pygame.draw.line(screen,(255, 0, 0), (p1fX, p1fY), (p2fX, p2fY), 10)
     # screen.blit(arrow, rect)
-    if score == False:
+    if score == False and miss == False:
         screen.blit(paper,(paper_x, paper_y))
     
     pygame.display.update()
