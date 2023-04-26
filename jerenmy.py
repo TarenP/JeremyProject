@@ -1,4 +1,3 @@
-
 import pygame
 
 import math
@@ -47,6 +46,15 @@ text2 = font1.render('Miss!', True, (255, 0, 0))
 textRect2 = text2.get_rect()
 # setting center for the first text
 textRect2.center = (500, 250)
+
+counter = 0
+maxScore = 0
+text3 = font1.render("Score: " + str(counter), True, (255, 0, 0))
+textRect3 = text3.get_rect()
+# setting center for the first text
+textRect3.center = (500, 100)
+
+
 
 can_x = 400
 can_y = 400
@@ -153,6 +161,7 @@ while True:
     if score ==True and time.time() >= startTime + 3 and not miss:
         can_x = random.randrange(200, 800)
         can_y = random.randrange(500, 800)
+        counter += 1
         reset() 
         #Allow for key presses
 
@@ -184,20 +193,19 @@ while True:
                 p2fY = d2*math.sin(math.radians(angle))
 
             elif event.key == pygame.K_w and not inMotion:
-                init_v += 1
-                d2 += 5
-                p2fX = d2*math.cos(math.radians(angle))
-                p2fY = d2*math.sin(math.radians(angle))
+                if init_v<= 25:
+                    init_v += 1
+                    d2 += 5
+                    p2fX = d2*math.cos(math.radians(angle))
+                    p2fY = d2*math.sin(math.radians(angle))
             elif event.key == pygame.K_s and not inMotion:
-                init_v -= 1
-                d2 -= 5
-                p2fX = d2*math.cos(math.radians(angle))
-                p2fY = d2*math.sin(math.radians(angle))
-            elif event.key == pygame.K_r:
-                reset()
-
-                #create variable to store the papers position
-                
+                if init_v >= 10:
+                    init_v -= 1
+                    d2 -= 5
+                    p2fX = d2*math.cos(math.radians(angle))
+                    p2fY = d2*math.sin(math.radians(angle))
+            # elif event.key == pygame.K_r:
+            #     reset()
 
 
     if inThrow:
@@ -227,23 +235,31 @@ while True:
         # sleep(.015)
         # print("X: ", paper_x)
         # print("Y: ", paper_y)
-    
-    
-    
 
     screen.blit(background, (0, 0))
-
     if finish:
-        screen.blit(person1, (10,300))    
+        screen.blit(person1, (10,300))
+            
     elif score:
         screen.blit(happy, (10,300))
         screen.blit(text1, textRect1)
     elif miss:
+        counter = 0
         screen.blit(sad, (10,300))
         screen.blit(text2, textRect2)
     else:
         screen.blit(person, (10, 300))
     
+    if counter >= maxScore:
+        maxScore = counter
+
+    
+    text3 = font1.render("Score: " + str(counter), True, (255, 0, 0))
+    screen.blit(text3, textRect3)
+    text4 = font1.render("High score: " + str(maxScore), True, (255, 0, 0))
+    textRect4 = text4.get_rect()
+    textRect4.center = (500, 170)
+    screen.blit(text4, textRect4) 
     
     
     if score == False and miss == False:
